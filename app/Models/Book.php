@@ -13,4 +13,9 @@ class Book extends Model
   protected $primaryKey = 'id';
 
   protected $guarded = ['id'];
+
+  public function authors()
+  {
+      return $this->belongsToMany('App\Models\Author');
+  }
 }

@@ -22,18 +22,37 @@ class BookController extends CrudController
       $this->crud->setColumns([
         [
           'name' => 'name',
-          'lable' => 'Имя'
+          'label' => 'Имя'
         ],
         [
           'name' => 'price',
-          'lable' => 'Стоимость'
+          'label' => 'Стоимость'
+        ],
+        [
+          'name' => 'authors',
+          'label' => 'Авторы',
+          'options' => (function ($query){
+            $text = "";
+            $isFirst = true;
+            $authors = $query->get();
+            foreach ($authors as $author) {
+              if($isFirst){
+                $text .= $author->name;
+                $isFirst = false;
+              }
+              else{
+                $text .= ", ".$author->name;
+              }
+            }
+            return $text;
+          })
         ]
       ]);
 
       $this->crud->addFields([
         [
           'name' => 'name',
-          'lable' => 'Имя',
+          'label' => 'Имя',
           'type' => 'text',
           'attributes' =>[
             'required' => 'required',
@@ -42,12 +61,24 @@ class BookController extends CrudController
         ],
         [
           'name' => 'price',
-          'lable' => 'Стоимость',
+          'label' => 'Стоимость',
           'type' => 'text',
           'attributes' =>[
             'required' => 'required',
             'placeholder' => 'Введите стоимость'
           ]
+        ],
+        [
+          'name' => 'authors',
+          'label' => 'Авторы',
+          'type' => 'select2_multiple',
+          'entity' => 'authors',
+          'pivot' => 'true',
+          'attribute' => 'name',
+          'model' => 'App\Models\Author',
+          'options' => (function ($query){
+            return $query->orderBy('name', 'asc')->get();
+          })
         ]
       ]);
   }
